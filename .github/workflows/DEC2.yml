@@ -18,7 +18,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add EC2 to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
       - name: Deploy to EC2
         run: |
-          ssh ec2-user@ip-172-31-9-198 'cd /var/www/html/RWDD && git pull'
-          ssh ec2-user@ip-172-31-9-198 'sudo systemctl restart apache2' 
+          ssh ec2-user@${{ secrets.EC2_HOST }} 'cd /var/www/html/RWDD && git pull'
+          ssh ec2-user@${{ secrets.EC2_HOST }} 'sudo systemctl restart httpd' 

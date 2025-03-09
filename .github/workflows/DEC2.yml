@@ -25,5 +25,5 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh ec2-user@${{ secrets.EC2_HOST }} 'cd /var/www/html/RWDD && git pull'
+          ssh ec2-user@${{ secrets.EC2_HOST }} 'sudo cd /var/www/html/RWDD && git pull'
           ssh ec2-user@${{ secrets.EC2_HOST }} 'sudo systemctl restart httpd' 

@@ -13,17 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Add EC2 to known hosts
+      - name: Add Known Hosts
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2
         run: |
-          ssh ec2-user@${{ secrets.EC2_HOST }} 'sudo cd /var/www/html/RWDD && git pull'
-          ssh ec2-user@${{ secrets.EC2_HOST }} 'sudo systemctl restart httpd' 
+          ssh ec2-user@${{ secrets.EC2_HOST }} "cd /var/www/html/RWDD && \
+          git fetch origin && \
+          git checkout main && \
+          git pull origin main && \
+          sudo systemctl restart httpd"
